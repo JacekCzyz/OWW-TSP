@@ -1,2 +1,12 @@
-﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
+﻿using evolution;
+using Graph;
+
+
+MapGraph mapGraph = new MapGraph();
+
+mapGraph.generate_map(100);
+
+algorithm_result result = new algorithm_result();
+result.example(mapGraph);
+
+Console.WriteLine("as");

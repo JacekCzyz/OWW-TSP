@@ -1,0 +1,15 @@
+C:\Users\jacek\source\repos\OWW-TSP\tsp\bin\Debug\net8.0\tsp.exe
+C:\Users\jacek\source\repos\OWW-TSP\tsp\bin\Debug\net8.0\tsp.deps.json
+C:\Users\jacek\source\repos\OWW-TSP\tsp\bin\Debug\net8.0\tsp.runtimeconfig.json
+C:\Users\jacek\source\repos\OWW-TSP\tsp\bin\Debug\net8.0\tsp.dll
+C:\Users\jacek\source\repos\OWW-TSP\tsp\bin\Debug\net8.0\tsp.pdb
+C:\Users\jacek\source\repos\OWW-TSP\tsp\obj\Debug\net8.0\tsp.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\jacek\source\repos\OWW-TSP\tsp\obj\Debug\net8.0\tsp.AssemblyInfoInputs.cache
+C:\Users\jacek\source\repos\OWW-TSP\tsp\obj\Debug\net8.0\tsp.AssemblyInfo.cs
+C:\Users\jacek\source\repos\OWW-TSP\tsp\obj\Debug\net8.0\tsp.csproj.CoreCompileInputs.cache
+C:\Users\jacek\source\repos\OWW-TSP\tsp\obj\Debug\net8.0\tsp.sourcelink.json
+C:\Users\jacek\source\repos\OWW-TSP\tsp\obj\Debug\net8.0\tsp.dll
+C:\Users\jacek\source\repos\OWW-TSP\tsp\obj\Debug\net8.0\refint\tsp.dll
+C:\Users\jacek\source\repos\OWW-TSP\tsp\obj\Debug\net8.0\tsp.pdb
+C:\Users\jacek\source\repos\OWW-TSP\tsp\obj\Debug\net8.0\tsp.genruntimeconfig.cache
+C:\Users\jacek\source\repos\OWW-TSP\tsp\obj\Debug\net8.0\ref\tsp.dll
