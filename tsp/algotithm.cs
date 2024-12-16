@@ -19,32 +19,107 @@ namespace evolution
         public static algorithm_result example(MapGraph Graph)
         {
             algorithm_result result = new algorithm_result();
-            result.permutation = new int[Graph.intAmountVertexes+1];
-            result.permutation[0] = 0;
-            for (int i = 1; i < Graph.intAmountVertexes; i++)
+            result.permutation = new int[Graph.intAmountVertexes];
+            for (int i = 0; i < Graph.intAmountVertexes; i++)
             {
-                result.dPathLen += Graph.calculate_path(Graph.collVertexes[i - 1], Graph.collVertexes[i]);
                 result.permutation[i] = i;
             }
-            result.dPathLen += Graph.calculate_path(Graph.collVertexes[0], Graph.collVertexes[Graph.intAmountVertexes-1]);
-            result.permutation[Graph.intAmountVertexes] = 0;
+            result.dPathLen = calculate_len(result.permutation, Graph);
 
             return result;
         }
 
-
-        public static List<int[]> generate_population(int population_size, int vertex_amount)
+        public static algorithm_result evolution(MapGraph Graph, int generations, int population_size)
         {
-            List<int[]> population = new List<int[]>();
+            algorithm_result result = new algorithm_result();
+            List<int[]> selected_specimen = new List<int[]>();
+            int specimen_amount;
+            double mutation_factor = 1.0;
+            int intAmountVertexes = Graph.intAmountVertexes;
+
+            List<int[]> population = generate_init_population(population_size, intAmountVertexes);
+
+            for (int i=0; i < generations; i++)
+            {
+                selected_specimen = selection(population, population_size, (int)Math.Sqrt(population_size), Graph);
+                specimen_amount = selected_specimen.Count();
+                population = generate_population(selected_specimen, (int)Math.Pow(specimen_amount, 2), intAmountVertexes, mutation_factor);
+                mutation_factor *= 0.99;
+            }
+
+            result.dPathLen = calculate_len(selected_specimen[0], Graph);
+            result.permutation = selected_specimen[0];
+
+            return result;
+        }
+
+        public static List<int[]> generate_init_population(int population_size, int vertex_amount)
+        {
+            List<int[]> new_population = new List<int[]>();
 
             for (int i = 0; i < population_size; i++)
             {
-                population.Add(create_permutation(vertex_amount));
+                new_population.Add(create_permutation(vertex_amount));
             }
 
-            return population;
+            return new_population;
         }
 
+        public static List<int[]> generate_population(List<int[]> population, int population_size, int vertex_amount, double mutation_factor)
+        {
+            List<int[]> new_population = new List<int[]>();
+            int[] temp_specimen = new int[vertex_amount];
+            Random random = new Random();
+            for (int i  = 0; i < population.Count(); i++)
+            {
+                for (int j = 0; j < population.Count(); j++)
+                {
+                    if(i!=j)
+                    {
+                        temp_specimen = cross_over(population[i], population[j]);
+                        if (random.NextDouble() < mutation_factor)
+                        {
+                            mutate(temp_specimen);
+                        }
+                    }
+
+
+                    else
+                        temp_specimen = population[i];
+                    new_population.Add(temp_specimen);
+                }
+            }
+            return new_population;
+        }
+
+        public static int[] cross_over(int[] specimen1, int[] specimen2)
+        {
+            int[] result = new int[specimen1.Count()];
+
+            for(int i=0; i < (specimen1.Count()/2); i++)
+            {
+                result[i]= specimen1[i];
+            }
+            for (int j = (specimen1.Count() / 2); j < specimen1.Count(); j++)
+            {
+                result[j] = specimen2[j];
+            }
+            return result;
+        }
+        public static void mutate(int[] specimen)
+        {
+            int temp;
+            Random rand = new Random();
+            int a = rand.Next(0, specimen.Length);
+            int b = rand.Next(0, specimen.Length);
+            while(a!=b)
+            {
+                b = rand.Next(0, specimen.Length);
+            }
+            temp = specimen[a];
+            specimen[a] = specimen[b];
+            specimen[b] = temp;
+        }
         public static List<int[]> selection(List<int[]> population, int population_size, int amount_to_select, MapGraph Graph)
         {
             List<(double length, int index)> collIndexedLengths = new List<(double, int)>();
@@ -74,29 +149,21 @@ namespace evolution
         public static double calculate_len(int[] permutation, MapGraph Graph)
         {
             double path = 0;
-            for (int i = 1; i < Graph.intAmountVertexes; i++)
+
+            for (int i = 0; i < permutation.Length - 1; i++)
             {
-                path += Graph.calculate_path(Graph.collVertexes[permutation[i]], Graph.collVertexes[permutation[Graph.intAmountVertexes - 1]]);
+                path += Graph.calculate_path(
+                    Graph.collVertexes[permutation[i]],
+                    Graph.collVertexes[permutation[i + 1]]
+                );
             }
 
-            path += Graph.calculate_path(Graph.collVertexes[permutation[0]], Graph.collVertexes[permutation[Graph.intAmountVertexes - 1]]);
-        
+            path += Graph.calculate_path(
+                Graph.collVertexes[permutation[permutation.Length - 1]],
+                Graph.collVertexes[permutation[0]]
+            );
+
             return path;
-        }
-
-        public static algorithm_result evolution(MapGraph Graph, int generations, int population_size)
-        {
-            algorithm_result result = new algorithm_result();
-
-            List<int[]> population = generate_population(population_size, Graph.intAmountVertexes);
-
-            List<int[]> selected_specimen = selection(population, population_size, 1, Graph);
-
-            //only one for now
-            result.dPathLen = calculate_len(selected_specimen[0],Graph);
-            result.permutation = selected_specimen[0];
-
-            return result;
         }
 
 
@@ -116,17 +183,7 @@ namespace evolution
                 numbers[i] = numbers[randomIndex];
                 numbers[randomIndex] = temp;
             }
-
-            int[] result = new int[amount + 1];
-            for (int i = 0; i < amount; i++)
-            {
-                result[i] = numbers[i];
-            }
-
-            result[result.Length - 1] = result[0];
-
-            return result;
+            return numbers.ToArray();
         }
-
     }
 }

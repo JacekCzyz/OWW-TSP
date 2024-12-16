@@ -3,12 +3,12 @@
   "WorkspaceRootPath": "C:\\Users\\jacek\\source\\repos\\OWW-TSP\\tsp\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{E80F190D-8F82-44A9-AC04-AD54ED99CDDC}|tsp.csproj|c:\\users\\jacek\\source\\repos\\oww-tsp\\tsp\\algotithm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E80F190D-8F82-44A9-AC04-AD54ED99CDDC}|tsp.csproj|solutionrelative:algotithm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{E80F190D-8F82-44A9-AC04-AD54ED99CDDC}|tsp.csproj|c:\\users\\jacek\\source\\repos\\oww-tsp\\tsp\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E80F190D-8F82-44A9-AC04-AD54ED99CDDC}|tsp.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E80F190D-8F82-44A9-AC04-AD54ED99CDDC}|tsp.csproj|c:\\users\\jacek\\source\\repos\\oww-tsp\\tsp\\algotithm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E80F190D-8F82-44A9-AC04-AD54ED99CDDC}|tsp.csproj|solutionrelative:algotithm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{E80F190D-8F82-44A9-AC04-AD54ED99CDDC}|tsp.csproj|c:\\users\\jacek\\source\\repos\\oww-tsp\\tsp\\graph.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -26,7 +26,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 5,
           "Children": [
             {
               "$type": "Bookmark",
@@ -42,13 +42,13 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "algotithm.cs",
               "DocumentMoniker": "C:\\Users\\jacek\\source\\repos\\OWW-TSP\\tsp\\algotithm.cs",
               "RelativeDocumentMoniker": "algotithm.cs",
               "ToolTip": "C:\\Users\\jacek\\source\\repos\\OWW-TSP\\tsp\\algotithm.cs",
               "RelativeToolTip": "algotithm.cs",
-              "ViewState": "AQIAABkAAAAAAAAAAAAlwCkAAAAeAAAA",
+              "ViewState": "AQIAAAoAAAAAAAAAAAAqwB4AAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-12-08T23:03:03.587Z",
               "EditorCaption": ""
@@ -61,20 +61,20 @@
               "RelativeDocumentMoniker": "Graph.cs",
               "ToolTip": "C:\\Users\\jacek\\source\\repos\\OWW-TSP\\tsp\\Graph.cs",
               "RelativeToolTip": "Graph.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAACgAAAAFAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAACcAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-12-08T22:37:23.647Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\jacek\\source\\repos\\OWW-TSP\\tsp\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
               "ToolTip": "C:\\Users\\jacek\\source\\repos\\OWW-TSP\\tsp\\Program.cs",
               "RelativeToolTip": "Program.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAwAAAAuAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAYAAAAYAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-12-08T22:36:55.719Z",
               "EditorCaption": ""
