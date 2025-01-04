@@ -41,7 +41,7 @@ namespace evolution
 
             for (int i=0; i < generations; i++)
             {
-                selected_specimen = selection(population, population_size, (int)Math.Sqrt(population_size), Graph, 4);
+                selected_specimen = selection(population, population_size, (int)Math.Sqrt(population_size), Graph);
                 specimen_amount = selected_specimen.Count();
                 population = generate_population(selected_specimen, (int)Math.Pow(specimen_amount, 2), intAmountVertexes, mutation_factor, 4);
                 mutation_factor *= 0.99;
@@ -133,17 +133,15 @@ namespace evolution
             specimen[a] = specimen[b];
             specimen[b] = temp;
         }
-
-        public static List<int[]> selection(List<int[]> population, int population_size, int amount_to_select, MapGraph Graph, int maxDegreeOfParallelism)
+        public static List<int[]> selection(List<int[]> population, int population_size, int amount_to_select, MapGraph Graph)
         {
             List<(double length, int index)> collIndexedLengths = new List<(double, int)>();
             List<int[]> selected_items = new List<int[]>();
-            ParallelOptions parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = maxDegreeOfParallelism };
 
-            Parallel.For(0, population.Count, parallelOptions, i =>
+            for (int i = 0; i < population.Count; i++)
             {
                 collIndexedLengths.Add((calculate_len(population[i], Graph), i));
-            });
+            }
 
             collIndexedLengths = collIndexedLengths.OrderBy(x => x.length).ToList();
 
