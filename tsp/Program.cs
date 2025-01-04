@@ -4,7 +4,7 @@ using Graph;
 
 MapGraph mapGraph = new MapGraph();
 
-mapGraph.generate_map(50);
+mapGraph.generate_map(50, 4);
 
 algorithm_result result = new algorithm_result();
 result = algorithm.example(mapGraph);

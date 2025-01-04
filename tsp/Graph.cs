@@ -11,19 +11,27 @@ namespace Graph
         public int intAmountVertexes {  get; set; }
         public List<Vertex> collVertexes { get; set; }
 
-        public void generate_map(int intAmount)
+        public void generate_map(int intAmount, int maxDegreeOfParallelism)
         { 
             intAmountVertexes = intAmount;
             collVertexes = new List<Vertex>();
             Random random = new Random();
-            for (int i = 0; i < intAmount; i++)
+
+            ParallelOptions options = new ParallelOptions{
+                MaxDegreeOfParallelism = maxDegreeOfParallelism
+            };
+        
+            Parallel.For(0, intAmount, options, i =>
             {
-                collVertexes.Add(new Vertex
+                lock (collVertexes)
                 {
-                    x = random.Next(0, 100),
-                    y = random.Next(0, 100)
-                });
-            }    
+                    collVertexes.Add(new Vertex
+                    {
+                        x = random.Next(0, 100),
+                        y = random.Next(0, 100)
+                    });
+                }
+            });
         }
 
         public double calculate_path(Vertex vertexA, Vertex vertexB)
