@@ -41,9 +41,9 @@ namespace evolution
 
             for (int i=0; i < generations; i++)
             {
-                selected_specimen = selection(population, population_size, (int)Math.Sqrt(population_size), Graph);
+                selected_specimen = selection(population, population_size, (int)Math.Sqrt(population_size), Graph, 4);
                 specimen_amount = selected_specimen.Count();
-                population = generate_population(selected_specimen, (int)Math.Pow(specimen_amount, 2), intAmountVertexes, mutation_factor);
+                population = generate_population(selected_specimen, (int)Math.Pow(specimen_amount, 2), intAmountVertexes, mutation_factor, 4);
                 mutation_factor *= 0.99;
             }
 
@@ -65,30 +65,41 @@ namespace evolution
             return new_population;
         }
 
-        public static List<int[]> generate_population(List<int[]> population, int population_size, int vertex_amount, double mutation_factor)
+        public static List<int[]> generate_population(List<int[]> population, int population_size, int vertex_amount, double mutation_factor, int maxDegreeOfParallelism)
         {
             List<int[]> new_population = new List<int[]>();
-            int[] temp_specimen = new int[vertex_amount];
+            //int[] temp_specimen = new int[vertex_amount];
             Random random = new Random();
-            for (int i  = 0; i < population.Count(); i++)
+            object lockObj = new object();
+            ParallelOptions options = new ParallelOptions
             {
-                for (int j = 0; j < population.Count(); j++)
+                MaxDegreeOfParallelism = maxDegreeOfParallelism
+            };
+
+            Parallel.ForEach(population, options, specimen1 =>
+            {
+                foreach (var specimen2 in population)
                 {
-                    if(i!=j)
+                    int[] temp_specimen;
+                    if (specimen1 != specimen2)
                     {
-                        temp_specimen = cross_over(population[i], population[j]);
+                        temp_specimen = cross_over(specimen1, specimen2);
                         if (random.NextDouble() < mutation_factor)
                         {
                             mutate(temp_specimen);
                         }
                     }
-
-
                     else
-                        temp_specimen = population[i];
-                    new_population.Add(temp_specimen);
+                    {
+                        temp_specimen = specimen1;
+                    }
+
+                    lock (lockObj)
+                    {
+                        new_population.Add(temp_specimen);
+                    }
                 }
-            }
+            });
             return new_population;
         }
 
@@ -96,14 +107,16 @@ namespace evolution
         {
             int[] result = new int[specimen1.Count()];
 
-            for(int i=0; i < (specimen1.Count()/2); i++)
-            {
-                result[i]= specimen1[i];
-            }
-            for (int j = (specimen1.Count() / 2); j < specimen1.Count(); j++)
-            {
-                result[j] = specimen2[j];
-            }
+            Array.Copy(specimen1, 0, result, 0, specimen1.Length / 2);
+            Array.Copy(specimen2, specimen1.Length / 2, result, specimen1.Length / 2, specimen1.Length - specimen1.Length / 2);
+            //for(int i=0; i < (specimen1.Count()/2); i++)
+            //{
+            //    result[i]= specimen1[i];
+            //}
+            //for (int j = (specimen1.Count() / 2); j < specimen1.Count(); j++)
+            //{
+            //    result[j] = specimen2[j];
+            //}
             return result;
         }
         public static void mutate(int[] specimen)
@@ -120,15 +133,17 @@ namespace evolution
             specimen[a] = specimen[b];
             specimen[b] = temp;
         }
-        public static List<int[]> selection(List<int[]> population, int population_size, int amount_to_select, MapGraph Graph)
+
+        public static List<int[]> selection(List<int[]> population, int population_size, int amount_to_select, MapGraph Graph, int maxDegreeOfParallelism)
         {
             List<(double length, int index)> collIndexedLengths = new List<(double, int)>();
             List<int[]> selected_items = new List<int[]>();
+            ParallelOptions parallelOptions = new ParallelOptions { MaxDegreeOfParallelism = maxDegreeOfParallelism };
 
-            for (int i = 0; i < population.Count; i++)
+            Parallel.For(0, population.Count, parallelOptions, i =>
             {
                 collIndexedLengths.Add((calculate_len(population[i], Graph), i));
-            }
+            });
 
             collIndexedLengths = collIndexedLengths.OrderBy(x => x.length).ToList();
 
