@@ -105,18 +105,11 @@ namespace evolution
 
         public static int[] cross_over(int[] specimen1, int[] specimen2)
         {
-            int[] result = new int[specimen1.Count()];
-
-            Array.Copy(specimen1, 0, result, 0, specimen1.Length / 2);
-            Array.Copy(specimen2, specimen1.Length / 2, result, specimen1.Length / 2, specimen1.Length - specimen1.Length / 2);
-            //for(int i=0; i < (specimen1.Count()/2); i++)
-            //{
-            //    result[i]= specimen1[i];
-            //}
-            //for (int j = (specimen1.Count() / 2); j < specimen1.Count(); j++)
-            //{
-            //    result[j] = specimen2[j];
-            //}
+            int[] result = new int[specimen1.Length];
+            Random random = new Random();
+            int pivot = random.Next(1, specimen1.Length);
+            Array.Copy(specimen1, 0, result, 0, pivot);
+            Array.Copy(specimen2, pivot, result, pivot, specimen1.Length - pivot);
             return result;
         }
         public static void mutate(int[] specimen)

@@ -1,22 +1,18 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\X\\Desktop\\Magisterka\\Sem2\\OWW\\TSP\\tsp\\",
+  "WorkspaceRootPath": "C:\\Users\\jacek\\source\\repos\\OWW-TSP\\tsp\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{E80F190D-8F82-44A9-AC04-AD54ED99CDDC}|tsp.csproj|c:\\users\\x\\desktop\\magisterka\\sem2\\oww\\tsp\\tsp\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{E80F190D-8F82-44A9-AC04-AD54ED99CDDC}|tsp.csproj|c:\\users\\jacek\\source\\repos\\oww-tsp\\tsp\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E80F190D-8F82-44A9-AC04-AD54ED99CDDC}|tsp.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E80F190D-8F82-44A9-AC04-AD54ED99CDDC}|tsp.csproj|c:\\users\\x\\desktop\\magisterka\\sem2\\oww\\tsp\\tsp\\algotithm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{E80F190D-8F82-44A9-AC04-AD54ED99CDDC}|tsp.csproj|c:\\users\\jacek\\source\\repos\\oww-tsp\\tsp\\algotithm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E80F190D-8F82-44A9-AC04-AD54ED99CDDC}|tsp.csproj|solutionrelative:algotithm.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E80F190D-8F82-44A9-AC04-AD54ED99CDDC}|tsp.csproj|c:\\users\\x\\desktop\\magisterka\\sem2\\oww\\tsp\\tsp\\graph.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{E80F190D-8F82-44A9-AC04-AD54ED99CDDC}|tsp.csproj|c:\\users\\jacek\\source\\repos\\oww-tsp\\tsp\\graph.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E80F190D-8F82-44A9-AC04-AD54ED99CDDC}|tsp.csproj|solutionrelative:graph.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E80F190D-8F82-44A9-AC04-AD54ED99CDDC}|tsp.csproj|c:\\users\\x\\desktop\\magisterka\\sem2\\oww\\tsp\\tsp\\.gitignore||{3B902123-F8A7-4915-9F01-361F908088D0}",
-      "RelativeMoniker": "D:0:0:{E80F190D-8F82-44A9-AC04-AD54ED99CDDC}|tsp.csproj|solutionrelative:.gitignore||{3B902123-F8A7-4915-9F01-361F908088D0}"
     }
   ],
   "DocumentGroupContainers": [
@@ -26,7 +22,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 6,
+          "SelectedChildIndex": 5,
           "Children": [
             {
               "$type": "Bookmark",
@@ -44,28 +40,24 @@
               "$type": "Document",
               "DocumentIndex": 1,
               "Title": "algotithm.cs",
-              "DocumentMoniker": "C:\\Users\\X\\Desktop\\Magisterka\\Sem2\\OWW\\TSP\\tsp\\algotithm.cs",
+              "DocumentMoniker": "C:\\Users\\jacek\\source\\repos\\OWW-TSP\\tsp\\algotithm.cs",
               "RelativeDocumentMoniker": "algotithm.cs",
-              "ToolTip": "C:\\Users\\X\\Desktop\\Magisterka\\Sem2\\OWW\\TSP\\tsp\\algotithm.cs",
+              "ToolTip": "C:\\Users\\jacek\\source\\repos\\OWW-TSP\\tsp\\algotithm.cs",
               "RelativeToolTip": "algotithm.cs",
-              "ViewState": "AgIAABAAAAAAAAAAAAAqwDMAAAAAAAAAAAAAAA==",
+              "ViewState": "AQIAADsAAAAAAAAAAAAswEsAAAAxAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-12-08T23:03:03.587Z",
               "EditorCaption": ""
             },
             {
-              "$type": "Bookmark",
-              "Name": "ST:2:0:{34c7837f-3b3a-449c-bdf0-bdad86cbaf4a}"
-            },
-            {
               "$type": "Document",
               "DocumentIndex": 2,
               "Title": "Graph.cs",
-              "DocumentMoniker": "C:\\Users\\X\\Desktop\\Magisterka\\Sem2\\OWW\\TSP\\tsp\\Graph.cs",
+              "DocumentMoniker": "C:\\Users\\jacek\\source\\repos\\OWW-TSP\\tsp\\Graph.cs",
               "RelativeDocumentMoniker": "Graph.cs",
-              "ToolTip": "C:\\Users\\X\\Desktop\\Magisterka\\Sem2\\OWW\\TSP\\tsp\\Graph.cs",
+              "ToolTip": "C:\\Users\\jacek\\source\\repos\\OWW-TSP\\tsp\\Graph.cs",
               "RelativeToolTip": "Graph.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB4AAAAvAAAAAAAAAA==",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAACcAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-12-08T22:37:23.647Z",
               "EditorCaption": ""
@@ -74,26 +66,13 @@
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\X\\Desktop\\Magisterka\\Sem2\\OWW\\TSP\\tsp\\Program.cs",
+              "DocumentMoniker": "C:\\Users\\jacek\\source\\repos\\OWW-TSP\\tsp\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
-              "ToolTip": "C:\\Users\\X\\Desktop\\Magisterka\\Sem2\\OWW\\TSP\\tsp\\Program.cs",
+              "ToolTip": "C:\\Users\\jacek\\source\\repos\\OWW-TSP\\tsp\\Program.cs",
               "RelativeToolTip": "Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAYAAAAAAAAAA==",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA8AAAAYAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-12-08T22:36:55.719Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": ".gitignore",
-              "DocumentMoniker": "C:\\Users\\X\\Desktop\\Magisterka\\Sem2\\OWW\\TSP\\tsp\\.gitignore",
-              "RelativeDocumentMoniker": ".gitignore",
-              "ToolTip": "C:\\Users\\X\\Desktop\\Magisterka\\Sem2\\OWW\\TSP\\tsp\\.gitignore",
-              "RelativeToolTip": ".gitignore",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAACQAAAAJAAAAAAAAAA==",
-              "Icon": "00000000-0000-0000-0000-000000000000.000000|iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAF8SURBVDhPjVNLTgJBEG1lwpoFB3GNK9fieA48hD8iwT/ihwgSDAIHgAGXXsEV18CNzL/LquqZdsYM6kteXqcy3fWqpmpNRBgOhyABBEgpAFVKPIMUcYzUyOU\u002BXM/b2qtU3vkSfRjjZTCAMAw1A2LwzdFoBPP5HNqdzuL27n4juibWI\u002BUshBA1DIkhEx9iEorFotgslQqGYbxxAGFEqt1MxmPWJLbLZdZ\u002Bv89q5PMFPiTR6z2zdaxR0fXA0XTBcVywkb4fwHXjRteecIDNQ7UmExVYAdPcxYaqclN46na5WenMKjtlVnTYwcXlVYaDqImW9beD5N/TeGy32QHXm6hZ03ZgiSQHp2fnWQ4oBmJqWSqwAqZpZjt4aLXAD4J0VqyZsmoubfB8H2r1eoaD6NXZ9HcHO\u002BSA3f4AjifXl8rItOETM8ckB9WTWpYD9RdeZ1PWVWAHWXPQaDb59f/w8LiqHeh1pvGkCaP6qB8yXusoxmuNZ7XmII4O9vGuEF86osuDYRkpYQAAAABJRU5ErkJggg==",
-              "WhenOpened": "2024-12-08T22:35:10.107Z",
               "EditorCaption": ""
             }
           ]
