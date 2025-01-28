@@ -113,7 +113,6 @@ namespace evolution
                     result.permutation = selected_specimens[0];
                 }
             }
-
             return result;
         }
 
@@ -197,7 +196,7 @@ namespace evolution
             int end = start + random.Next(2, specimen.Length / 2);
 
             List<int> sublist = specimen.Skip(start).Take(end - start).ToList();
-            sublist = sublist.OrderBy(x => random.Next()).ToList(); // Shuffle
+            sublist = sublist.OrderBy(x => random.Next()).ToList();
 
             for (int i = start; i < end; i++)
             {
