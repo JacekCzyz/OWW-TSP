@@ -53,9 +53,10 @@ namespace evolution
             {
                 MaxDegreeOfParallelism = num_threads
             };
-
+            object lockobject = new object();
             for (int j = 0; j < generations / migration_rate; j++)
             {
+
                 Parallel.For(0, island_amount, parallelOptions, k =>
                 {
                     double mutation_factor = starting_islands_mutation; // Ensure thread safety by using a local variable
@@ -63,28 +64,39 @@ namespace evolution
                     {
                         var selected_specimen = selection(islands[k], population_size, (int)Math.Sqrt(population_size), Graph);
                         int specimen_amount = selected_specimen.Count();
-                        islands[k] = generate_population(selected_specimen, (int)Math.Pow(specimen_amount, 2), intAmountVertexes, mutation_factor);
+                        lock (lockobject)
+                        {
+                            islands[k] = generate_population(selected_specimen, (int)Math.Pow(specimen_amount, 2), intAmountVertexes, mutation_factor);
+                        }
                         mutation_factor *= 0.9999;
                     }
                 });
                 starting_islands_mutation = mutation_factor;
-                
+
+
                 if (j < generations / migration_rate - 1)
                 {
                     List<int[]> migrants = new List<int[]>();
-                    //for (int i = 0; i < island_amount; i++)
-                        Parallel.For(0, island_amount, parallelOptions, i =>
+                    int migration_size = Math.Max(1, population_size / 10); //10% migruje
+
+                    Parallel.For(0, island_amount, parallelOptions, l =>
+                    {
+                        List<int[]> selected_specimens = selection(islands[l], population_size, migration_size, Graph);
+                        lock (migrants)
                         {
-                            List<int[]> selected_specimens = selection(islands[i], population_size, 1, Graph);
-                            migrants.Add(selected_specimens[0]);
-                        });
-                    Random random = new Random();
+                            migrants.AddRange(selected_specimens);
+                        }
+                    });
 
                     migrants = migrants.OrderBy(x => random.Next()).ToList();
+
                     for (int i = 0; i < island_amount; i++)
                     {
-                        islands[i].RemoveAt(islands[i].Count - 1);
-                        islands[i].Add(migrants[i]);
+                        for (int m = 0; m < migration_size; m++)
+                        {
+                            islands[i].RemoveAt(islands[i].Count - 1);
+                            islands[i].Add(migrants[(i * migration_size + m) % migrants.Count]);
+                        }
                     }
                 }
             }
@@ -94,11 +106,11 @@ namespace evolution
             foreach (List<int[]> island in islands)
             {
                 List<int[]> selected_specimens = selection(island, population_size, 1, Graph);
-                double currentLen = calculate_len(selected_specimen[0], Graph);
+                double currentLen = calculate_len(selected_specimens[0], Graph);
                 if (currentLen < result.dPathLen)
                 {
                     result.dPathLen = currentLen;
-                    result.permutation = selected_specimen[0];
+                    result.permutation = selected_specimens[0];
                 }
             }
 
@@ -114,14 +126,17 @@ namespace evolution
                 new_population.Add(create_permutation(vertex_amount));
             }
 
-            return new_population;
+            return new_population.OrderBy(x => random.Next()).ToList(); // Extra shuffle
         }
+
+
+        private static Random random = new Random();
 
         public static List<int[]> generate_population(List<int[]> population, int population_size, int vertex_amount, double mutation_factor)
         {
             List<int[]> new_population = new List<int[]>();
             int[] temp_specimen = new int[vertex_amount];
-            Random random = new Random();
+            //Random random = new Random();
             for (int i = 0; i < population.Count(); i++)
             {
                 for (int j = 0; j < population.Count(); j++)
@@ -144,50 +159,84 @@ namespace evolution
             return new_population;
         }
 
-        public static int[] cross_over(int[] specimen1, int[] specimen2)
+        public static int[] cross_over(int[] parent1, int[] parent2)
         {
-            int[] result = new int[specimen1.Length];
-            Random random = new Random();
-            int pivot = random.Next(1, specimen1.Length);
-            Array.Copy(specimen1, 0, result, 0, pivot);
-            Array.Copy(specimen2, pivot, result, pivot, specimen1.Length - pivot);
-            return result;
+            int length = parent1.Length;
+            int[] child = new int[length];
+            Array.Fill(child, -1); // Mark empty spots
+
+            int start = random.Next(length / 3);
+            int end = start + random.Next(length / 3, length - start);
+
+            // Copy a segment from parent1
+            HashSet<int> usedGenes = new HashSet<int>();
+            for (int i = start; i < end; i++)
+            {
+                child[i] = parent1[i];
+                usedGenes.Add(parent1[i]);
+            }
+
+            // Fill remaining positions from parent2 in order
+            int index = 0;
+            for (int i = 0; i < length; i++)
+            {
+                if (child[i] == -1) // Empty spot
+                {
+                    while (usedGenes.Contains(parent2[index])) { index++; }
+                    child[i] = parent2[index++];
+                }
+            }
+
+            return child;
         }
+
+
         public static void mutate(int[] specimen)
         {
-            int temp;
-            Random rand = new Random();
-            int a = rand.Next(0, specimen.Length);
-            int b = rand.Next(0, specimen.Length);
-            while(a!=b)
+            int start = random.Next(specimen.Length / 2);
+            int end = start + random.Next(2, specimen.Length / 2);
+
+            List<int> sublist = specimen.Skip(start).Take(end - start).ToList();
+            sublist = sublist.OrderBy(x => random.Next()).ToList(); // Shuffle
+
+            for (int i = start; i < end; i++)
             {
-                b = rand.Next(0, specimen.Length);
+                specimen[i] = sublist[i - start];
             }
-            temp = specimen[a];
-            specimen[a] = specimen[b];
-            specimen[b] = temp;
         }
+
         public static List<int[]> selection(List<int[]> population, int population_size, int amount_to_select, MapGraph Graph)
         {
-            List<(double length, int index)> collIndexedLengths = new List<(double, int)>();
             List<int[]> selected_items = new List<int[]>();
+
+            // Oblicz przystosowanie (fitness) dla każdego osobnika
+            List<(double fitness, int[] specimen)> fitnessList = new List<(double, int[])>();
+            double totalFitness = 0;
 
             for (int i = 0; i < population.Count; i++)
             {
-                collIndexedLengths.Add((calculate_len(population[i], Graph), i));
+                double pathLength = calculate_len(population[i], Graph);
+                double fitness = 1 / (pathLength + 1); // Odwrócone przystosowanie (im krótsza ścieżka, tym większe fitness)
+                fitnessList.Add((fitness, population[i]));
+                totalFitness += fitness;
             }
 
-            collIndexedLengths = collIndexedLengths.OrderBy(x => x.length).ToList();
-
-            int[] indexes_to_return = new int[amount_to_select];
+            // Selekcja ruletkowa
+            Random random = new Random();
             for (int i = 0; i < amount_to_select; i++)
             {
-                indexes_to_return[i] = collIndexedLengths[i].index;
-            }
+                double randomValue = random.NextDouble() * totalFitness;
+                double cumulativeFitness = 0;
 
-            foreach (int index in indexes_to_return)
-            {
-                selected_items.Add(population[index]);
+                foreach (var item in fitnessList)
+                {
+                    cumulativeFitness += item.fitness;
+                    if (cumulativeFitness >= randomValue)
+                    {
+                        selected_items.Add(item.specimen);
+                        break;
+                    }
+                }
             }
 
             return selected_items;
