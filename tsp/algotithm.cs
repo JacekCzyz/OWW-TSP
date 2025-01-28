@@ -29,7 +29,7 @@ namespace evolution
             return result;
         }
 
-        public static algorithm_result evolution(MapGraph Graph, int generations, int population_size)
+        public static algorithm_result evolution(MapGraph Graph, int generations, int population_size, int island_amount, int migration_rate)
         {
             algorithm_result result = new algorithm_result();
             List<int[]> selected_specimen = new List<int[]>();
@@ -37,18 +37,70 @@ namespace evolution
             double mutation_factor = 1.0;
             int intAmountVertexes = Graph.intAmountVertexes;
 
-            List<int[]> population = generate_init_population(population_size, intAmountVertexes);
+            List<List<int[]>> islands = new List<List<int[]>>();
 
-            for (int i=0; i < generations; i++)
+            for (int i = 0; i < island_amount; i++)
             {
-                selected_specimen = selection(population, population_size, (int)Math.Sqrt(population_size), Graph);
-                specimen_amount = selected_specimen.Count();
-                population = generate_population(selected_specimen, (int)Math.Pow(specimen_amount, 2), intAmountVertexes, mutation_factor, 4);
-                mutation_factor *= 0.99;
+                islands.Add(generate_init_population(population_size, intAmountVertexes));
             }
 
-            result.dPathLen = calculate_len(selected_specimen[0], Graph);
-            result.permutation = selected_specimen[0];
+            double starting_islands_mutation = 1.0;
+            double ending_islands_mutation = 1.0;
+
+            int num_threads = island_amount; // Set the desired number of threads
+
+            var parallelOptions = new ParallelOptions
+            {
+                MaxDegreeOfParallelism = num_threads
+            };
+
+            for (int j = 0; j < generations / migration_rate; j++)
+            {
+                Parallel.For(0, island_amount, parallelOptions, k =>
+                {
+                    double mutation_factor = starting_islands_mutation; // Ensure thread safety by using a local variable
+                    for (int i = 0; i < migration_rate; i++)
+                    {
+                        var selected_specimen = selection(islands[k], population_size, (int)Math.Sqrt(population_size), Graph);
+                        int specimen_amount = selected_specimen.Count();
+                        islands[k] = generate_population(selected_specimen, (int)Math.Pow(specimen_amount, 2), intAmountVertexes, mutation_factor);
+                        mutation_factor *= 0.9999;
+                    }
+                });
+                starting_islands_mutation = mutation_factor;
+                
+                if (j < generations / migration_rate - 1)
+                {
+                    List<int[]> migrants = new List<int[]>();
+                    //for (int i = 0; i < island_amount; i++)
+                        Parallel.For(0, island_amount, parallelOptions, i =>
+                        {
+                            List<int[]> selected_specimens = selection(islands[i], population_size, 1, Graph);
+                            migrants.Add(selected_specimens[0]);
+                        });
+                    Random random = new Random();
+
+                    migrants = migrants.OrderBy(x => random.Next()).ToList();
+                    for (int i = 0; i < island_amount; i++)
+                    {
+                        islands[i].RemoveAt(islands[i].Count - 1);
+                        islands[i].Add(migrants[i]);
+                    }
+                }
+            }
+
+            result.dPathLen = double.MaxValue;
+
+            foreach (List<int[]> island in islands)
+            {
+                List<int[]> selected_specimens = selection(island, population_size, 1, Graph);
+                double currentLen = calculate_len(selected_specimen[0], Graph);
+                if (currentLen < result.dPathLen)
+                {
+                    result.dPathLen = currentLen;
+                    result.permutation = selected_specimen[0];
+                }
+            }
 
             return result;
         }
@@ -65,41 +117,30 @@ namespace evolution
             return new_population;
         }
 
-        public static List<int[]> generate_population(List<int[]> population, int population_size, int vertex_amount, double mutation_factor, int maxDegreeOfParallelism)
+        public static List<int[]> generate_population(List<int[]> population, int population_size, int vertex_amount, double mutation_factor)
         {
             List<int[]> new_population = new List<int[]>();
-            //int[] temp_specimen = new int[vertex_amount];
+            int[] temp_specimen = new int[vertex_amount];
             Random random = new Random();
-            object lockObj = new object();
-            ParallelOptions options = new ParallelOptions
+            for (int i = 0; i < population.Count(); i++)
             {
-                MaxDegreeOfParallelism = maxDegreeOfParallelism
-            };
-
-            Parallel.ForEach(population, options, specimen1 =>
-            {
-                foreach (var specimen2 in population)
+                for (int j = 0; j < population.Count(); j++)
                 {
-                    int[] temp_specimen;
-                    if (specimen1 != specimen2)
+                    if (i != j)
                     {
-                        temp_specimen = cross_over(specimen1, specimen2);
+                        temp_specimen = cross_over(population[i], population[j]);
                         if (random.NextDouble() < mutation_factor)
                         {
                             mutate(temp_specimen);
                         }
                     }
-                    else
-                    {
-                        temp_specimen = specimen1;
-                    }
 
-                    lock (lockObj)
-                    {
-                        new_population.Add(temp_specimen);
-                    }
+
+                    else
+                        temp_specimen = population[i];
+                    new_population.Add(temp_specimen);
                 }
-            });
+            }
             return new_population;
         }
 
