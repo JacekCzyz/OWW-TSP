@@ -14,11 +14,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\jacek\\source\\repos\\OWW-TSP\\tsp\\tsp.csproj",
+      "projectUniqueName": "C:\\Users\\jacek\\OneDrive\\Pulpit\\studyja\\oww2\\OWW-TSP-da35e37acc60a84c827a1b2956f85afe0cd595cb\\tsp\\tsp.csproj",
       "projectName": "tsp",
-      "projectPath": "C:\\Users\\jacek\\source\\repos\\OWW-TSP\\tsp\\tsp.csproj",
+      "projectPath": "C:\\Users\\jacek\\OneDrive\\Pulpit\\studyja\\oww2\\OWW-TSP-da35e37acc60a84c827a1b2956f85afe0cd595cb\\tsp\\tsp.csproj",
       "packagesPath": "C:\\Users\\jacek\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\jacek\\source\\repos\\OWW-TSP\\tsp\\obj\\",
+      "outputPath": "C:\\Users\\jacek\\OneDrive\\Pulpit\\studyja\\oww2\\OWW-TSP-da35e37acc60a84c827a1b2956f85afe0cd595cb\\tsp\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

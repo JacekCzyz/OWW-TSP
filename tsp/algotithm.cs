@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.ExceptionServices;
 using System.Text;
 using System.Threading.Tasks;
 using Graph;
@@ -37,9 +38,9 @@ namespace evolution
             double mutation_factor = 1.0;
             int intAmountVertexes = Graph.intAmountVertexes;
 
-            List<List<int[]>> islands = new List<List<int[]>>();
+            List<List<int[]>> islands =  new List<List<int[]>>();
 
-            for (int i = 0; i < island_amount; i++)
+            for(int i=0; i < island_amount; i++)
             {
                 islands.Add(generate_init_population(population_size, intAmountVertexes));
             }
@@ -47,49 +48,35 @@ namespace evolution
             double starting_islands_mutation = 1.0;
             double ending_islands_mutation = 1.0;
 
-            int num_threads = island_amount; // Set the desired number of threads
-
-            var parallelOptions = new ParallelOptions
+            for (int j=0; j < generations/migration_rate; j++)
             {
-                MaxDegreeOfParallelism = num_threads
-            };
-            object lockobject = new object();
-            for (int j = 0; j < generations / migration_rate; j++)
-            {
-
-                Parallel.For(0, island_amount, parallelOptions, k =>
+                for(int k=0; k<island_amount;k++)
                 {
-                    double mutation_factor = starting_islands_mutation; // Ensure thread safety by using a local variable
+                    mutation_factor = starting_islands_mutation;
                     for (int i = 0; i < migration_rate; i++)
                     {
-                        var selected_specimen = selection(islands[k], population_size, (int)Math.Sqrt(population_size), Graph);
-                        int specimen_amount = selected_specimen.Count();
-                        lock (lockobject)
-                        {
-                            islands[k] = generate_population(selected_specimen, (int)Math.Pow(specimen_amount, 2), intAmountVertexes, mutation_factor);
-                        }
+                        selected_specimen = selection(islands[k], population_size, (int)Math.Sqrt(population_size), Graph);
+                        specimen_amount = selected_specimen.Count();
+                        islands[k] = generate_population(selected_specimen, (int)Math.Pow(specimen_amount, 2), intAmountVertexes, mutation_factor);
                         mutation_factor *= 0.9999;
                     }
-                });
-                starting_islands_mutation = mutation_factor;
-
+                    ending_islands_mutation = mutation_factor;
+                }
+                starting_islands_mutation = ending_islands_mutation;
 
                 if (j < generations / migration_rate - 1)
                 {
                     List<int[]> migrants = new List<int[]>();
                     int migration_size = Math.Max(1, population_size / 10); //10% migruje
 
-                    Parallel.For(0, island_amount, parallelOptions, l =>
+                    for (int i = 0; i < island_amount; i++)
                     {
-                        List<int[]> selected_specimens = selection(islands[l], population_size, migration_size, Graph);
-                        lock (migrants)
-                        {
-                            migrants.AddRange(selected_specimens);
-                        }
-                    });
+                        List<int[]> selected_specimens = selection(islands[i], population_size, migration_size, Graph);
+                        migrants.AddRange(selected_specimens);
+                    }
+                    Random random = new Random();
 
                     migrants = migrants.OrderBy(x => random.Next()).ToList();
-
                     for (int i = 0; i < island_amount; i++)
                     {
                         for (int m = 0; m < migration_size; m++)
@@ -106,20 +93,21 @@ namespace evolution
             foreach (List<int[]> island in islands)
             {
                 List<int[]> selected_specimens = selection(island, population_size, 1, Graph);
-                double currentLen = calculate_len(selected_specimens[0], Graph);
+                double currentLen = calculate_len(selected_specimen[0], Graph);
                 if (currentLen < result.dPathLen)
                 {
                     result.dPathLen = currentLen;
-                    result.permutation = selected_specimens[0];
+                    result.permutation = selected_specimen[0];
                 }
             }
+
             return result;
         }
 
         public static List<int[]> generate_init_population(int population_size, int vertex_amount)
         {
             List<int[]> new_population = new List<int[]>();
-
+            Random random = new Random();
             for (int i = 0; i < population_size; i++)
             {
                 new_population.Add(create_permutation(vertex_amount));
@@ -128,19 +116,16 @@ namespace evolution
             return new_population.OrderBy(x => random.Next()).ToList(); // Extra shuffle
         }
 
-
-        private static Random random = new Random();
-
         public static List<int[]> generate_population(List<int[]> population, int population_size, int vertex_amount, double mutation_factor)
         {
             List<int[]> new_population = new List<int[]>();
             int[] temp_specimen = new int[vertex_amount];
-            //Random random = new Random();
-            for (int i = 0; i < population.Count(); i++)
+            Random random = new Random();
+            for (int i  = 0; i < population.Count(); i++)
             {
                 for (int j = 0; j < population.Count(); j++)
                 {
-                    if (i != j)
+                    if(i!=j)
                     {
                         temp_specimen = cross_over(population[i], population[j]);
                         if (random.NextDouble() < mutation_factor)
@@ -163,7 +148,7 @@ namespace evolution
             int length = parent1.Length;
             int[] child = new int[length];
             Array.Fill(child, -1); // Mark empty spots
-
+            Random random = new Random();
             int start = random.Next(length / 3);
             int end = start + random.Next(length / 3, length - start);
 
@@ -188,39 +173,35 @@ namespace evolution
 
             return child;
         }
-
-
         public static void mutate(int[] specimen)
         {
+            Random random = new Random();
             int start = random.Next(specimen.Length / 2);
             int end = start + random.Next(2, specimen.Length / 2);
 
             List<int> sublist = specimen.Skip(start).Take(end - start).ToList();
-            sublist = sublist.OrderBy(x => random.Next()).ToList();
+            sublist = sublist.OrderBy(x => random.Next()).ToList(); // Shuffle
 
             for (int i = start; i < end; i++)
             {
                 specimen[i] = sublist[i - start];
             }
         }
-
         public static List<int[]> selection(List<int[]> population, int population_size, int amount_to_select, MapGraph Graph)
         {
             List<int[]> selected_items = new List<int[]>();
 
-            // Oblicz przystosowanie (fitness) dla każdego osobnika
             List<(double fitness, int[] specimen)> fitnessList = new List<(double, int[])>();
             double totalFitness = 0;
 
             for (int i = 0; i < population.Count; i++)
             {
                 double pathLength = calculate_len(population[i], Graph);
-                double fitness = 1 / (pathLength + 1); // Odwrócone przystosowanie (im krótsza ścieżka, tym większe fitness)
+                double fitness = 1 / (pathLength + 1);
                 fitnessList.Add((fitness, population[i]));
                 totalFitness += fitness;
             }
 
-            // Selekcja ruletkowa
             Random random = new Random();
             for (int i = 0; i < amount_to_select; i++)
             {
