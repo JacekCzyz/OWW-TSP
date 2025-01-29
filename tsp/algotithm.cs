@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -28,8 +29,8 @@ namespace evolution
 
             return result;
         }
-
-        public static algorithm_result evolution(MapGraph Graph, int generations, int population_size, int island_amount, int migration_rate)
+        //SEKWENCYJNY
+        public static algorithm_result evolution_sequential(MapGraph Graph, int generations, int population_size, int island_amount, int migration_rate)
         {
             algorithm_result result = new algorithm_result();
             List<int[]> selected_specimen = new List<int[]>();
@@ -38,6 +39,7 @@ namespace evolution
             int intAmountVertexes = Graph.intAmountVertexes;
 
             List<List<int[]>> islands = new List<List<int[]>>();
+            Graph.generate_map_seq(intAmountVertexes);
 
             for (int i = 0; i < island_amount; i++)
             {
@@ -47,7 +49,83 @@ namespace evolution
             double starting_islands_mutation = 1.0;
             double ending_islands_mutation = 1.0;
 
-            int num_threads = island_amount; // Set the desired number of threads
+            for (int j = 0; j < generations / migration_rate; j++)
+            {
+                for (int k = 0; k < island_amount; k++)
+                {
+                    mutation_factor = starting_islands_mutation;
+                    for (int i = 0; i < migration_rate; i++)
+                    {
+                        selected_specimen = selection(islands[k], population_size, (int)Math.Sqrt(population_size), Graph);
+                        specimen_amount = selected_specimen.Count();
+                        islands[k] = generate_population(selected_specimen, (int)Math.Pow(specimen_amount, 2), intAmountVertexes, mutation_factor);
+                        mutation_factor *= 0.9999;
+                    }
+                    ending_islands_mutation = mutation_factor;
+                }
+                starting_islands_mutation = ending_islands_mutation;
+
+                if (j < generations / migration_rate - 1)
+                {
+                    List<int[]> migrants = new List<int[]>();
+                    int migration_size = Math.Max(1, population_size / 10); //10% migruje
+
+                    for (int i = 0; i < island_amount; i++)
+                    {
+                        List<int[]> selected_specimens = selection(islands[i], population_size, migration_size, Graph);
+                        migrants.AddRange(selected_specimens);
+                    }
+                    Random random = new Random();
+
+                    migrants = migrants.OrderBy(x => random.Next()).ToList();
+                    for (int i = 0; i < island_amount; i++)
+                    {
+                        for (int m = 0; m < migration_size; m++)
+                        {
+                            islands[i].RemoveAt(islands[i].Count - 1);
+                            islands[i].Add(migrants[(i * migration_size + m) % migrants.Count]);
+                        }
+                    }
+                }
+            }
+
+            result.dPathLen = double.MaxValue;
+
+            foreach (List<int[]> island in islands)
+            {
+                List<int[]> selected_specimens = selection(island, population_size, 1, Graph);
+                double currentLen = calculate_len(selected_specimen[0], Graph);
+                if (currentLen < result.dPathLen)
+                {
+                    result.dPathLen = currentLen;
+                    result.permutation = selected_specimen[0];
+                }
+            }
+
+            return result;
+        }
+
+
+        public static algorithm_result evolution_parallel(MapGraph Graph, int generations, int population_size, int island_amount, int migration_rate, int num_threads)
+        {
+            algorithm_result result = new algorithm_result();
+            List<int[]> selected_specimen = new List<int[]>();
+            int specimen_amount;
+            double mutation_factor = 1.0;
+            int intAmountVertexes = Graph.intAmountVertexes;
+
+            List<List<int[]>> islands = new List<List<int[]>>();
+            Graph.generate_map(intAmountVertexes, num_threads);
+
+            for (int i = 0; i < island_amount; i++)
+            {
+                islands.Add(generate_init_population(population_size, intAmountVertexes));
+            }
+
+            double starting_islands_mutation = 1.0;
+            double ending_islands_mutation = 1.0;
+
+            num_threads = island_amount; // Set the desired number of threads
 
             var parallelOptions = new ParallelOptions
             {
@@ -280,5 +358,70 @@ namespace evolution
             }
             return numbers.ToArray();
         }
+
+
+
+        ////////////////////////////
+        ///
+
+        public static void RunExperiments(MapGraph graph, int generations, int population_size, int island_amount, int migration_rate)
+        {
+            // Definicja liczby wątków do testowania
+            int[] thread_counts = { 1, 2, 3, 4, 8 };
+
+            // Rozmiary grafów do testowania
+            int[] graph_sizes = { 500, 600, 700, 800, 900, 1000 };
+
+            // Ścieżka do pliku wynikowego
+            string filePath = "results.csv";
+
+            // Tworzenie pliku wynikowego
+            using (StreamWriter writer = new StreamWriter(filePath))
+            {
+                writer.WriteLine("Threads,GraphSize,Time(ms),BestPathLen"); // Nagłówek CSV
+
+                // Iteracja po liczbie wątków
+                foreach (int threads in thread_counts)
+                {
+                    // Iteracja po rozmiarach grafów
+                    foreach (int graph_size in graph_sizes)
+                    {
+                        // Generowanie grafu w zależności od liczby wątków
+                        if (threads == 1)
+                        {
+                            graph.generate_map_seq(graph_size);  // Generowanie grafu sekwencyjnie
+                        }
+                        else
+                        {
+                            graph.generate_map(graph_size, threads);  // Generowanie grafu równolegle
+                        }
+
+                        Stopwatch stopwatch = new Stopwatch();
+                        stopwatch.Start();
+
+                        // Wybór odpowiedniej metody ewolucji
+                        algorithm_result result;
+                        if (threads == 1)
+                        {
+                            result = evolution_sequential(graph, generations, population_size, island_amount, migration_rate);
+                        }
+                        else
+                        {
+                            result = evolution_parallel(graph, generations, population_size, island_amount, migration_rate, threads);
+                        }
+
+                        stopwatch.Stop();
+                        long elapsedMs = stopwatch.ElapsedMilliseconds;
+
+                        // Zapis do pliku
+                        writer.WriteLine($"{threads},{graph_size},{elapsedMs},{result.dPathLen}");
+                        Console.WriteLine($"Threads: {threads}, Graph Size: {graph_size}, Time: {elapsedMs}ms, Best Path: {result.dPathLen}");
+                    }
+                }
+            }
+
+            Console.WriteLine($"Results saved to {filePath}");
+        }
+
     }
 }

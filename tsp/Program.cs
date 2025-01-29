@@ -1,16 +1,45 @@
 ﻿using evolution;
 using Graph;
 
+class Program
+{
+    static void Main(string[] args)
+    {
+        // Parametry ewolucji
+        int generations = 1000;
+        int population_size = 50;
+        int island_amount = 4;
+        int migration_rate = 10;
+        int num_threads = 4; // Liczba wątków (1 dla sekwencyjnego, >1 dla równoległego)
 
-MapGraph mapGraph = new MapGraph();
+        // Tworzenie grafu
+        MapGraph mapGraph = new MapGraph();
+        mapGraph.generate_map(500, 4); // 500 wierzchołków, 4 wątki
 
-mapGraph.generate_map(500, 4);
+        Console.WriteLine($"Wygenerowano graf z {mapGraph.intAmountVertexes} wierzchołkami.");
 
-algorithm_result result = new algorithm_result();
-result = algorithm.example(mapGraph);
+        // Uruchomienie przykładowej metody
+        algorithm_result result = algorithm.example(mapGraph);
+        Console.WriteLine($"Przykładowa długość ścieżki: {result.dPathLen}");
 
-algorithm_result result2 = new algorithm_result();
-result2 = algorithm.evolution(mapGraph, 1000, 9, 8, 100);
+        // Wybór metody ewolucji (sekwencyjna lub równoległa)
+        algorithm_result result2;
+        if (num_threads > 1)
+        {
+            // Tryb równoległy
+            result2 = algorithm.evolution_parallel(mapGraph, generations, population_size, island_amount, migration_rate, num_threads);
+            Console.WriteLine($"Długość najlepszej ścieżki po równoległej ewolucji: {result2.dPathLen}");
+        }
+        else
+        {
+            // Tryb sekwencyjny
+            result2 = algorithm.evolution_sequential(mapGraph, generations, population_size, island_amount, migration_rate);
+            Console.WriteLine($"Długość najlepszej ścieżki po sekwencyjnej ewolucji: {result2.dPathLen}");
+        }
 
+        // Uruchomienie eksperymentów
+        algorithm.RunExperiments(mapGraph, generations, population_size, island_amount, migration_rate);
 
-Console.WriteLine("as");
+        Console.WriteLine("Koniec programu.");
+    }
+}

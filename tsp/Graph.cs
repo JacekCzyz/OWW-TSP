@@ -34,7 +34,22 @@ namespace Graph
             });
         }
 
-        public double calculate_path(Vertex vertexA, Vertex vertexB)
+        public void generate_map_seq(int intAmount)
+        {
+            intAmountVertexes = intAmount;
+            collVertexes = new List<Vertex>();
+            Random random = new Random();
+            for (int i = 0; i < intAmount; i++)
+            {
+                collVertexes.Add(new Vertex
+                {
+                    x = random.Next(0, 100),
+                    y = random.Next(0, 100)
+                });
+            }
+        }
+
+            public double calculate_path(Vertex vertexA, Vertex vertexB)
         {
             double path = Math.Round(Math.Pow(vertexA.x - vertexB.x, 2) + Math.Pow(vertexA.y - vertexB.y, 2));
             return path;

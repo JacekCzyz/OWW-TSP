@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\jacek\\source\\repos\\OWW-TSP\\tsp\\tsp.csproj": {}
+    "C:\\Users\\48661\\Source\\Repos\\OWW-TSP\\tsp\\tsp.csproj": {}
   },
   "projects": {
-    "C:\\Users\\jacek\\source\\repos\\OWW-TSP\\tsp\\tsp.csproj": {
+    "C:\\Users\\48661\\Source\\Repos\\OWW-TSP\\tsp\\tsp.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\jacek\\source\\repos\\OWW-TSP\\tsp\\tsp.csproj",
+        "projectUniqueName": "C:\\Users\\48661\\Source\\Repos\\OWW-TSP\\tsp\\tsp.csproj",
         "projectName": "tsp",
-        "projectPath": "C:\\Users\\jacek\\source\\repos\\OWW-TSP\\tsp\\tsp.csproj",
-        "packagesPath": "C:\\Users\\jacek\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\jacek\\source\\repos\\OWW-TSP\\tsp\\obj\\",
+        "projectPath": "C:\\Users\\48661\\Source\\Repos\\OWW-TSP\\tsp\\tsp.csproj",
+        "packagesPath": "C:\\Users\\48661\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\48661\\Source\\Repos\\OWW-TSP\\tsp\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\jacek\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\48661\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -65,7 +65,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.300/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.403/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
